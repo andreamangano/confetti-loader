@@ -1,0 +1,11 @@
+'use strict';
+global.chai = require('chai');
+global.chai.should();
+global.should = chai.should();
+global.expect = global.chai.expect;
+global.chaiAsPromised = require('chai-as-promised');
+global.chai.use(global.chaiAsPromised);
+global.chai.config.includeStack = true;
+//global.sinon = require('sinon');
+//global.sinonChai = require('sinon-chai');
+//global.chai.use(global.sinonChai);

@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "xo-space/esnext"
+  ],
+  "rules": {
+    "no-unused-vars": 0,
+    "operator-linebreak": ["error", "before"]
+  }
+}
