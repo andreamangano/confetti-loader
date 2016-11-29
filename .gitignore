@@ -1,7 +1,8 @@
 .DS_store
 node_modules
 .idea
-lib
+/lib
+/bin
 
 ### Node template
 # Logs
@@ -28,4 +29,3 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-src/settings.yml
