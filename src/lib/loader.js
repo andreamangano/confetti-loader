@@ -1,3 +1,4 @@
+require('babel-polyfill');
 const path = require('path');
 import * as utils from './utils';
 /*
@@ -9,15 +10,21 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
+          // https://github.com/geraintluff/tv4
+          // TODO: check with external validator
           // TODO: add check on file structure
           // Check on properties on data object
           // reject if something is wrong
+          // TODO: check if:
+          // - the given data is an object
+          // - the object has the property theme (otherwise take the default
+          // one)
+          // - the object
           resolve(data);
         })
         .catch(error => reject(error));
     });
   }
-
   /* Load slides */
   loadSlides(path) {
     return new Promise((resolve, reject) => {
@@ -26,7 +33,7 @@ class Loader {
           // TODO: add check on file structure
           // Check on properties on data object
           // reject if something is wrong
-          resolve(data);
+          resolve(data.slides);
         })
         .catch(error => reject(error));
     });
@@ -40,7 +47,7 @@ class Loader {
           // TODO: add check on file structure
           // Check on properties on data object
           // reject if something is wrong
-          resolve(data);
+          resolve(data.config);
         })
         .catch(error => reject(error));
     });
@@ -68,7 +75,7 @@ class Loader {
       // Added compilers
       data.compilers = config.compilers;
       // Load slide data
-      data.slides = await this.loadSlides(config.paths.slides).slides;
+      data.slides = await this.loadSlides(config.paths.slides);
       // Base theme path
       themePath = path.join(config.paths.themes, `confetti-theme-${data.theme}`);
       // Set paths: sources and destinations
@@ -76,6 +83,8 @@ class Loader {
       // Set theme source paths
       data.paths.sources = {
         languages: path.join(themePath, 'languages'),
+        index: path.join(themePath, 'views', 'index.pug'),
+        slide: path.join(themePath, 'views', 'slide.pug'),
         views: path.join(themePath, 'views'),
         styles: path.join(themePath, 'styles'),
         fonts: path.join(themePath, 'fonts'),
@@ -84,6 +93,8 @@ class Loader {
       // Set destinations paths
       data.paths.destinations = {
         views: config.paths.dist,
+        index: config.paths.dist,
+        slide: config.paths.dist,
         styles: path.join(config.paths.dist, 'styles'),
         fonts: path.join(config.paths.dist, 'fonts'),
         images: path.join(config.paths.dist, 'images')
@@ -91,7 +102,7 @@ class Loader {
       // Load theme configs
       data.themeConfig = await this.loadThemeConfig(
         path.join(themePath, 'data.yml')
-      ).config;
+      );
       // Load translations
       data.translations = await utils.loadYaml2JSON(
         utils.getPathTranslationFile(data.paths.sources.languages, data.lang)
