@@ -52,9 +52,13 @@
     "eslint-plugin-babel": "^3.3.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.1.2",
-    "path": "^0.12.7",
     "rimraf": "^2.2.8",
-    "sinon": "^1.17.6",
+    "sinon": "^1.17.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.2",
+    "path": "^0.12.7",
+    "tv4": "^1.2.7",
     "util": "^0.10.3",
     "yamljs": "^0.2.8",
     "yargs": "^6.4.0"
