@@ -1,4 +1,5 @@
 'use strict';
+import path from 'path';
 global.chai = require('chai');
 global.chai.should();
 global.should = chai.should();
@@ -9,3 +10,4 @@ global.chai.config.includeStack = true;
 //global.sinon = require('sinon');
 //global.sinonChai = require('sinon-chai');
 //global.chai.use(global.sinonChai);
+global.testFolder = path.resolve('test', 'temp');
