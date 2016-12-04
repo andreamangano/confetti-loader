@@ -1,5 +1,5 @@
 require('babel-polyfill');
-const path = require('path');
+import path from 'path';
 import * as utils from './utils';
 /*
  The loader class aims to retrieve all data and settings from the config files.

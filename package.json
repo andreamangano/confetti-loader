@@ -11,7 +11,7 @@
     "compile": "npm run compile:bin && npm run compile:lib",
     "test": "./node_modules/.bin/mocha --compilers js:babel-core/register --require babel-polyfill"
   },
-  "main": "lib/loader.js",
+  "main": "./lib/loader.js",
   "bin": {
     "confetti-loader": "./bin/loader.js"
   },
