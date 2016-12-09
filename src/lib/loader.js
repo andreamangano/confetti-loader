@@ -25,6 +25,7 @@ class Loader {
         .catch(error => reject(error));
     });
   }
+
   /* Load slides */
   loadSlides(path) {
     return new Promise((resolve, reject) => {
@@ -52,6 +53,7 @@ class Loader {
         .catch(error => reject(error));
     });
   }
+
   /*
    Structure of config parameter:
    {
@@ -73,7 +75,9 @@ class Loader {
       // Load base deck settings
       data = await this.loadDeckConfig(config.paths.settings);
       // Added compilers
-      data.compilers = config.compilers;
+      data.compilers = config.compilers
+        ? config.compilers
+        : {};
       // Load slide data
       data.slides = await this.loadSlides(config.paths.slides);
       // Base theme path
@@ -108,7 +112,6 @@ class Loader {
         utils.getPathTranslationFile(data.paths.sources.languages, data.lang)
       );
     } catch (err) {
-      console.log(err);
       throw new Error(err);
     }
     return data;
