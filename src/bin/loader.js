@@ -11,10 +11,8 @@ const usage = argv
     requiresArg: true
   })
   .argv;
-
 const fs = require('fs');
 const stream = fs.createReadStream(usage.config);
-
 let content = '';
 stream.on('data', function(buf) {
   content += buf.toString();
@@ -22,9 +20,13 @@ stream.on('data', function(buf) {
 stream.on('end', function() {
   const loaderConfig = JSON.parse(content);
   const loader = new Loader();
-  loader.loadDeck(loaderConfig).then(
-    data => {
-      process.stdout.write(JSON.stringify(data));
-    }
-  );
+  loader.loadDeck(loaderConfig)
+    .then(
+      data => {
+        process.stdout.write(JSON.stringify(data));
+      }
+    )
+    .catch(error => {
+      console.error(error);
+    })
 });
