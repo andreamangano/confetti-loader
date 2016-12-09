@@ -28,15 +28,15 @@
     "lib/"
   ],
   "keywords": [
-    "website",
     "presentation",
-    "framework",
     "confetti",
-    "loader",
-    "scripts",
+    "slidedeck",
+    "slides",
+    "talk",
+    "slideshow",
     "speaker",
-    "deck",
-    "slides"
+    "website",
+    "loader"
   ],
   "devDependencies": {
     "babel-cli": "^6.16.0",
