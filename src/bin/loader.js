@@ -2,7 +2,7 @@
 'use strict';
 import argv from 'yargs';
 import Loader from './../lib/loader';
-const stream = require('stream');
+import fs from 'fs';
 const usage = argv
   .usage('Usage: $0 --config [file]')
   .option('config', {
@@ -12,22 +12,24 @@ const usage = argv
     requiresArg: true
   })
   .argv;
-const streamRead = fs.createReadStream(usage.config);
-var converter = new stream.Transform();
-converter._transform = function(data, encoding, cb) {
-  const loader = new Loader();
-  loader.loadDeck(JSON.parse(data.toString()))
-    .then(
-      deckData => {
-        this.push(JSON.stringify(deckData));
-        cb();
-      }
-    )
-    .catch(error => {
-      console.error(error);
-    });
-};
-streamRead
-  .pipe(converter)
-  .pipe(process.stdout);
+const Transform = require('stream').Transform;
+const t = new Transform({
+  writableObjectMode: true,
 
+  transform(chunk, encoding, callback) {
+    const loader = new Loader();
+    loader.loadDeck(JSON.parse(chunk.toString()))
+      .then(
+        deckData => {
+          this.push(JSON.stringify(deckData));
+          callback();
+        }
+      )
+      .catch(error => {
+        console.error(error);
+      });
+  }
+});
+fs.createReadStream(usage.config)
+  .pipe(t)
+  .pipe(process.stdout);
