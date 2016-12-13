@@ -90,7 +90,7 @@ class Loader {
         index: path.join(themePath, 'views', 'index.pug'),
         slide: path.join(themePath, 'views', 'slide.pug'),
         views: path.join(themePath, 'views'),
-        styles: path.join(themePath, 'styles'),
+        styles: path.join(themePath, 'assets', 'styles', '**', '*.scss'),
         fonts: path.join(themePath, 'fonts'),
         images: path.join(themePath, 'images')
       };
@@ -107,6 +107,8 @@ class Loader {
       data.themeConfig = await this.loadThemeConfig(
         path.join(themePath, 'data.yml')
       );
+      // Include theme node_modules path
+      data.compilers.sass.includePaths.push(path.join(themePath, 'node_modules'));
       // Load translations
       data.translations = await utils.loadYaml2JSON(
         utils.getPathTranslationFile(data.paths.sources.languages, data.lang)
