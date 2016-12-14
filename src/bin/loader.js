@@ -1,35 +1,47 @@
 #!/usr/bin/env node
 'use strict';
+
 import argv from 'yargs';
 import Loader from './../lib/loader';
 import fs from 'fs';
-const usage = argv
+import path from 'path';
+
+const loader = new Loader();
+const args = argv
   .usage('Usage: $0 --config [file]')
   .option('config', {
     type: 'string',
-    describe: 'Path to the config file',
+    describe: 'JSON/JavaScript options object or file',
     defaultDescription: 'confetti.loader.json',
     requiresArg: true
   })
   .argv;
-const Transform = require('stream').Transform;
-const t = new Transform({
-  writableObjectMode: true,
 
-  transform(chunk, encoding, callback) {
-    const loader = new Loader();
-    loader.loadDeck(JSON.parse(chunk.toString()))
-      .then(
-        deckData => {
-          this.push(JSON.stringify(deckData));
-          callback();
-        }
-      )
-      .catch(error => {
-        console.error(error);
-      });
+const getConfig = input => {
+  try {
+    return require(path.resolve(input));
+  } catch (e) {
+    var str;
+    try {
+      str = fs.readFileSync(input, 'utf8');
+    } catch (e) {
+      str = input;
+    }
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return eval('(' + str + ')');
+    }
   }
-});
-fs.createReadStream(usage.config)
-  .pipe(t)
-  .pipe(process.stdout);
+};
+
+loader.loadDeck(getConfig(args.config))
+  .then(
+    deckData => {
+      process.stdout.write(JSON.stringify(deckData));
+    }
+  )
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
