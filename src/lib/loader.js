@@ -1,4 +1,7 @@
-require('babel-polyfill');
+// import 'babel-polyfill';
+if (!global._babelPolyfill) {
+  require('babel-polyfill');
+}
 import path from 'path';
 import * as utils from './utils';
 /*
@@ -81,7 +84,7 @@ class Loader {
       // Load slide data
       data.slides = await this.loadSlides(config.paths.slides);
       // Base theme path
-      themePath = path.join(config.paths.themes, `confetti-theme-${data.theme}`);
+      themePath = path.join(config.paths.themes, data.theme);
       // Set paths: sources and destinations
       data.paths = {};
       // Set theme source paths
@@ -91,8 +94,9 @@ class Loader {
         slide: path.join(themePath, 'views', 'slide.pug'),
         views: path.join(themePath, 'views'),
         styles: path.join(themePath, 'assets', 'styles', '**', '*.scss'),
-        fonts: path.join(themePath, 'fonts'),
-        images: path.join(themePath, 'images')
+        fonts: path.join(themePath, 'assets', 'fonts', '**', '*.{eot,ttf,otf,woff,svg}'),
+        images: path.join(themePath, 'assets', 'images', '**', '*.{svg,png,jpg,jpeg,gif}'),
+        javascript: path.join(themePath, 'assets', 'images', '**', '*.js')
       };
       // Set destinations paths
       data.paths.destinations = {
@@ -101,7 +105,13 @@ class Loader {
         slide: config.paths.dist,
         styles: path.join(config.paths.dist, 'styles'),
         fonts: path.join(config.paths.dist, 'fonts'),
-        images: path.join(config.paths.dist, 'images')
+        images: path.join(config.paths.dist, 'images'),
+        javascript: path.join(config.paths.dist, 'javascript')
+      };
+      data.pathTo = {
+        styles: '/styles',
+        javascript: '/javascript',
+        images: '/images'
       };
       // Load theme configs
       data.themeConfig = await this.loadThemeConfig(
