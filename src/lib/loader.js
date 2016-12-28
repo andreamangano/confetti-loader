@@ -91,7 +91,7 @@ class Loader {
         languages: path.join(themePath, 'languages'),
         index: path.join(themePath, 'views', 'index.pug'),
         slide: path.join(themePath, 'views', 'slide.pug'),
-        views: path.join(themePath, 'views'),
+        views: path.join(themePath, 'views', '**', '*.pug'),
         styles: path.join(themePath, 'assets', 'styles', '**', '*.scss'),
         fonts: path.join(themePath, 'assets', 'fonts', '**', '*.{eot,ttf,otf,woff,svg}'),
         images: path.join(themePath, 'assets', 'images', '**', '*.{svg,png,jpg,jpeg,gif}'),
