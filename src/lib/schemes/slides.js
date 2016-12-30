@@ -1,4 +1,5 @@
-{
+'use strict';
+export default {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Slides",
   "description": "Slides set",
