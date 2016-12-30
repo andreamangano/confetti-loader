@@ -5,6 +5,7 @@ import path from 'path';
 import * as utils from './utils';
 import tv4 from 'tv4';
 import settingsSchema from './schemes/settings.json';
+import slidesSchema from './schemes/slides.json';
 /*
  The loader class aims to retrieve all data and settings from the config files.
  */
@@ -14,8 +15,9 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          if(!tv4.validate(data, settingsSchema)) {
-            reject(tv4.error);
+          const result = tv4.validate(data, settingsSchema);
+          if(!result) {
+            reject(result.error);
           }
           resolve(data);
         })
@@ -28,8 +30,9 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          if (!tv4.validate(data, settingsSchema)) {
-            reject(tv4.error)
+          const result = tv4.validate(data, slidesSchema);
+          if (!result) {
+            reject(result.error)
           }
           resolve(data.slides);
         })
