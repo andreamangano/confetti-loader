@@ -3,6 +3,8 @@ if (!global._babelPolyfill) {
 }
 import path from 'path';
 import * as utils from './utils';
+import tv4 from 'tv4';
+import settingsSchema from './schemes/settings.json';
 /*
  The loader class aims to retrieve all data and settings from the config files.
  */
@@ -12,16 +14,9 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          // https://github.com/geraintluff/tv4
-          // TODO: check with external validator
-          // TODO: add check on file structure
-          // Check on properties on data object
-          // reject if something is wrong
-          // TODO: check if:
-          // - the given data is an object
-          // - the object has the property theme (otherwise take the default
-          // one)
-          // - the object
+          if(!tv4.validate(data, settingsSchema)) {
+            reject(tv4.error);
+          }
           resolve(data);
         })
         .catch(error => reject(error));
@@ -33,9 +28,9 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          // TODO: add check on file structure
-          // Check on properties on data object
-          // reject if something is wrong
+          if (!tv4.validate(data, settingsSchema)) {
+            reject(tv4.error)
+          }
           resolve(data.slides);
         })
         .catch(error => reject(error));
@@ -47,10 +42,10 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          // TODO: add check on file structure
-          // Check on properties on data object
-          // reject if something is wrong
-          resolve(data.config);
+          if(data.config) {
+            resolve(data.config);
+          }
+          resolve({});
         })
         .catch(error => reject(error));
     });
@@ -59,14 +54,14 @@ class Loader {
   /*
    Structure of config parameter:
    {
-   paths: {
-   settings: 'path/to/settings.yml',
-   slides: 'path/to/slides.yml,
-   themes: 'path/to/themes'
-   },
-   compilers: {
-   sass: {...}
-   }
+     paths: {
+      settings: 'path/to/settings.yml',
+      slides: 'path/to/slides.yml,
+      themes: 'path/to/themes'
+     },
+    compilers: {
+      sass: {...}
+     }
    }
    */
   async loadDeck(config) {
@@ -77,9 +72,7 @@ class Loader {
       // Load base deck settings
       data = await this.loadDeckConfig(config.paths.settings);
       // Added compilers
-      data.compilers = config.compilers
-        ? config.compilers
-        : {};
+      data.compilers = config.compilers ? config.compilers : {};
       // Load slide data
       data.slides = await this.loadSlides(config.paths.slides);
       // Base theme path
@@ -113,9 +106,7 @@ class Loader {
         images: '/images'
       };
       // Load theme configs
-      data.themeConfig = await this.loadThemeConfig(
-        path.join(themePath, 'data.yml')
-      );
+      data.themeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
       // Include theme node_modules path
       data.compilers.sass.includePaths.push(path.join(themePath, 'node_modules'));
       // Load translations
