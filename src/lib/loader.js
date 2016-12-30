@@ -3,21 +3,23 @@ if (!global._babelPolyfill) {
 }
 import path from 'path';
 import * as utils from './utils';
-import tv4 from 'tv4';
-import settingsSchema from './schemes/settings.json';
-import slidesSchema from './schemes/slides.json';
+import validator from 'tv4';
+import settingsSchema from './schemes/settings';
+import slidesSchema from './schemes/slides';
+validator.addSchema('settings', settingsSchema);
+validator.addSchema('slides', slidesSchema);
 /*
  The loader class aims to retrieve all data and settings from the config files.
  */
 class Loader {
+
   /* Load deck settings */
   loadDeckConfig(path) {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          const result = tv4.validate(data, settingsSchema);
-          if(!result) {
-            reject(result.error);
+          if(!validator.validate(data, 'settings')) {
+            reject(validator.error);
           }
           resolve(data);
         })
@@ -30,9 +32,8 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          const result = tv4.validate(data, slidesSchema);
-          if (!result) {
-            reject(result.error)
+          if (!validator.validate(data.slides, 'slides')) {
+            reject(validator.error)
           }
           resolve(data.slides);
         })
