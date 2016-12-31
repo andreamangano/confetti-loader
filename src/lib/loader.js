@@ -122,9 +122,9 @@ class Loader {
         javascript: path.join(config.paths.dist, 'javascript')
       };
       data.pathTo = {
-        styles: '/styles',
-        javascript: '/javascript',
-        images: '/images'
+        styles: '/styles/',
+        javascript: '/javascript/',
+        images: '/images/'
       };
       // Load theme configs
       data.themeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
