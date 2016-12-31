@@ -109,6 +109,7 @@ class Loader {
         styles: path.join(themePath, 'assets', 'styles', '**', '*.scss'),
         fonts: path.join(themePath, 'assets', 'fonts', '**', '*.{eot,ttf,otf,woff,svg}'),
         images: path.join(themePath, 'assets', 'images', '**', '*.{svg,png,jpg,jpeg,gif}'),
+        covers: path.join(config.paths.covers, '**', '*.{svg,png,jpg,jpeg,gif}'),
         javascript: path.join(themePath, 'assets', 'images', '**', '*.js')
       };
       // Set destinations paths
@@ -119,12 +120,14 @@ class Loader {
         styles: path.join(config.paths.dist, 'styles'),
         fonts: path.join(config.paths.dist, 'fonts'),
         images: path.join(config.paths.dist, 'images'),
+        covers: path.join(config.paths.dist, 'covers'),
         javascript: path.join(config.paths.dist, 'javascript')
       };
       data.pathTo = {
         styles: '/styles/',
         javascript: '/javascript/',
-        images: '/images/'
+        images: '/images/',
+        covers: '/covers/'
       };
       // Load theme configs
       data.themeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
