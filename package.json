@@ -1,6 +1,6 @@
 {
   "name": "confetti-loader",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Loader to get the speaker deck data from config files.",
   "scripts": {
     "clean:bin": "rimraf ./bin/*",
