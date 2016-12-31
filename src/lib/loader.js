@@ -18,7 +18,7 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          if(!validator.validate(data, 'settings')) {
+          if (!validator.validate(data, 'settings')) {
             reject(validator.error);
           }
           resolve(data);
@@ -30,14 +30,31 @@ class Loader {
   /* Load slides */
   loadSlides(path) {
     return new Promise((resolve, reject) => {
-      utils.loadYaml2JSON(path)
-        .then(data => {
-          if (!validator.validate(data.slides, 'slides')) {
-            reject(validator.error)
-          }
-          resolve(data.slides);
-        })
-        .catch(error => reject(error));
+      const slides = [];
+      /*
+       Create an array where every item has the markdown string of a slide
+       (header info included).
+       */
+      const splitSlides = utils.splitMarkDown(path, '[slide]');
+      // Divide the content markdown from header info
+      let temp;
+      splitSlides.map((item, i) => {
+        let info = {};
+        temp = utils.splitMarkDownFromString(item, '---', 1);
+        if (temp[0]) {
+          // Parse header info e create a obj
+          info = utils.convertPropertyString(temp[0], '\n');
+        }
+        if (temp[1]) {
+          // Include description
+          info.description = temp[1];
+        }
+        slides[i] = info;
+      });
+      if (!validator.validate(slides, 'slides')) {
+        reject(validator.error)
+      }
+      resolve(slides);
     });
   }
 
@@ -46,7 +63,7 @@ class Loader {
     return new Promise((resolve, reject) => {
       utils.loadYaml2JSON(path)
         .then(data => {
-          if(data.config) {
+          if (data.config) {
             resolve(data.config);
           }
           resolve({});
@@ -58,14 +75,14 @@ class Loader {
   /*
    Structure of config parameter:
    {
-     paths: {
-      settings: 'path/to/settings.yml',
-      slides: 'path/to/slides.yml,
-      themes: 'path/to/themes'
-     },
-    compilers: {
-      sass: {...}
-     }
+   paths: {
+   settings: 'path/to/settings.yml',
+   slides: 'path/to/slides.yml,
+   themes: 'path/to/themes'
+   },
+   compilers: {
+   sass: {...}
+   }
    }
    */
   async loadDeck(config) {
