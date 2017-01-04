@@ -136,9 +136,6 @@ class Loader {
       data.themeConfig = data.themeConfig
         ? _.merge(defaultThemeConfig, data.themeConfig)
         : defaultThemeConfig;
-
-      console.log('DOPO: ' + JSON.stringify(data.themeConfig));
-
       // Include theme node_modules path
       data.compilers.sass.includePaths.push(path.join(themePath, 'node_modules'));
       // Load translations
