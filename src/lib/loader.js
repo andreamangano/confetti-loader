@@ -6,6 +6,7 @@ import * as utils from './utils';
 import validator from 'tv4';
 import settingsSchema from './schemes/settings';
 import slidesSchema from './schemes/slides';
+import _ from 'lodash';
 validator.addSchema('settings', settingsSchema);
 validator.addSchema('slides', slidesSchema);
 /*
@@ -130,7 +131,14 @@ class Loader {
         covers: '/covers/'
       };
       // Load theme configs
-      data.themeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
+      const defaultThemeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
+      // Override user theme settings with default theme settings
+      data.themeConfig = data.themeConfig
+        ? _.merge(defaultThemeConfig, data.themeConfig)
+        : defaultThemeConfig;
+
+      console.log('DOPO: ' + JSON.stringify(data.themeConfig));
+
       // Include theme node_modules path
       data.compilers.sass.includePaths.push(path.join(themePath, 'node_modules'));
       // Load translations
