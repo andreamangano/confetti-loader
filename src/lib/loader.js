@@ -86,7 +86,7 @@ class Loader {
    }
    }
    */
-  async loadDeck(config) {
+  async loadDeck(config, isRelease) {
     // TODO: check on the config structure
     let data = null;
     try {
@@ -101,6 +101,8 @@ class Loader {
       themePath = path.join(config.paths.themes, data.theme);
       // Set paths: sources and destinations
       data.paths = {};
+      // Base destination folder
+      const baseDestFolder = isRelease ? config.paths.dist : config.paths.dev;
       // Set theme source paths
       data.paths.sources = {
         languages: path.join(themePath, 'languages'),
@@ -115,14 +117,14 @@ class Loader {
       };
       // Set destinations paths
       data.paths.destinations = {
-        views: config.paths.dist,
-        index: config.paths.dist,
-        slide: config.paths.dist,
-        styles: path.join(config.paths.dist, 'styles'),
-        fonts: path.join(config.paths.dist, 'fonts'),
-        images: path.join(config.paths.dist, 'images'),
-        covers: path.join(config.paths.dist, 'covers'),
-        javascript: path.join(config.paths.dist, 'javascript')
+        views: baseDestFolder,
+        index: baseDestFolder,
+        slide: baseDestFolder,
+        styles: path.join(baseDestFolder, 'styles'),
+        fonts: path.join(baseDestFolder, 'fonts'),
+        images: path.join(baseDestFolder, 'images'),
+        covers: path.join(baseDestFolder, 'covers'),
+        javascript: path.join(baseDestFolder, 'javascript')
       };
       data.pathTo = {
         styles: '/styles/',
