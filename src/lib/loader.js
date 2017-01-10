@@ -87,7 +87,6 @@ class Loader {
    }
    */
   async loadDeck(config, isRelease) {
-    // TODO: check on the config structure
     let data = null;
     try {
       let themePath;
@@ -106,14 +105,13 @@ class Loader {
       // Set theme source paths
       data.paths.sources = {
         languages: path.join(themePath, 'languages'),
-        index: path.join(themePath, 'views', 'index.pug'),
-        slide: path.join(themePath, 'views', 'slide.pug'),
-        views: path.join(themePath, 'views', '**', '*.pug'),
-        styles: path.join(themePath, 'assets', 'styles', '**', '*.scss'),
-        fonts: path.join(themePath, 'assets', 'fonts', '**', '*.{eot,ttf,otf,woff,svg}'),
-        images: path.join(themePath, 'assets', 'images', '**', '*.{svg,png,jpg,jpeg,gif}'),
-        covers: path.join(config.paths.covers, '**', '*.{svg,png,jpg,jpeg,gif}'),
-        javascript: path.join(themePath, 'assets', 'images', '**', '*.js')
+        views: path.join(themePath, 'views'),
+        styles: path.join(themePath, 'assets', 'styles'),
+        fonts: path.join(themePath, 'assets', 'fonts'),
+        images: path.join(themePath, 'assets', 'images'),
+        deckImages: config.paths.covers,
+        covers: path.join(config.paths.covers, 'covers'),
+        javascript: path.join(themePath, 'assets', 'images')
       };
       // Set destinations paths
       data.paths.destinations = {
@@ -123,14 +121,16 @@ class Loader {
         styles: path.join(baseDestFolder, 'styles'),
         fonts: path.join(baseDestFolder, 'fonts'),
         images: path.join(baseDestFolder, 'images'),
-        covers: path.join(baseDestFolder, 'covers'),
+        deckImages: path.join(baseDestFolder, 'deckImages'),
+        covers: path.join(baseDestFolder, 'deckImages', 'covers'),
         javascript: path.join(baseDestFolder, 'javascript')
       };
-      data.pathTo = {
-        styles: '/styles/',
-        javascript: '/javascript/',
-        images: '/images/',
-        covers: '/covers/'
+      data.paths.to = {
+        styles: 'styles/',
+        javascript: 'javascript/',
+        images: 'images/',
+        deckImages: 'deckImages/',
+        covers: 'deckImages/covers/'
       };
       // Load theme configs
       const defaultThemeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
