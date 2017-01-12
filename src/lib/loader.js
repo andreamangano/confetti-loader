@@ -111,7 +111,7 @@ class Loader {
         images: path.join(themePath, 'assets', 'images'),
         deckImages: config.paths.covers,
         covers: path.join(config.paths.covers, 'covers'),
-        javascript: path.join(themePath, 'assets', 'images')
+        javascript: path.join(themePath, 'assets', 'javascript')
       };
       // Set destinations paths
       data.paths.destinations = {
