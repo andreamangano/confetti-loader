@@ -1,7 +1,7 @@
 {
   "name": "confetti-loader",
   "version": "0.0.20",
-  "description": "Loader to get the speaker deck data from config files.",
+  "description": "Data loader for Confetti, a tool for enriching your online slide decks.",
   "scripts": {
     "clean:bin": "rimraf ./bin/*",
     "clean:lib": "rimraf ./lib/*",
@@ -23,6 +23,13 @@
   },
   "author": "Andrea Mangano <andreaman87@gmail.com> (http://andreamangano.com)",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreamangano/confetti-loader"
+  },
+  "bugs": {
+    "url": "https://github.com/andreamangano/confetti-loader/issues"
+  },
   "files": [
     "bin/",
     "lib/"
