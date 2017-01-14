@@ -88,6 +88,7 @@ class Loader {
    */
   async loadDeck(config, isRelease) {
     let data = null;
+    let pathPrefix = '';
     try {
       let themePath;
       // Load base deck settings
@@ -125,12 +126,14 @@ class Loader {
         covers: path.join(baseDestFolder, 'deckImages', 'covers'),
         javascript: path.join(baseDestFolder, 'javascript')
       };
+      data.releasePrefix = isRelease && data.release_prefix ? data.release_prefix : '';
       data.paths.to = {
-        styles: 'styles/',
-        javascript: 'javascript/',
-        images: 'images/',
-        deckImages: 'deckImages/',
-        covers: 'deckImages/covers/'
+        base: path.join(data.releasePrefix, '/'),
+        styles: path.join(data.releasePrefix, 'styles/'),
+        javascript: path.join(data.releasePrefix, 'javascript/'),
+        images: path.join(data.releasePrefix, 'images/'),
+        deckImages: path.join(data.releasePrefix, 'deckImages/'),
+        covers: path.join(data.releasePrefix, 'deckImages/covers/')
       };
       // Load theme configs
       const defaultThemeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
