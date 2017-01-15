@@ -88,7 +88,6 @@ class Loader {
    */
   async loadDeck(config, isRelease) {
     let data = null;
-    let pathPrefix = '';
     try {
       let themePath;
       // Load base deck settings
@@ -97,12 +96,18 @@ class Loader {
       data.compilers = config.compilers ? config.compilers : {};
       // Load slide data
       data.slides = await this.loadSlides(config.paths.slides);
-      // Base theme path
-      themePath = path.join(config.paths.themes, data.theme);
       // Set paths: sources and destinations
       data.paths = {};
+      data.release_prefix = data.release_prefix
+        // It guarantees that the base url starts and ends with '/'
+        ? path.join('/', data.release_prefix, '/')
+        : '/';
       // Base destination folder
-      const baseDestFolder = isRelease ? config.paths.dist : config.paths.dev;
+      const baseDestFolder = isRelease
+        ? path.join(config.paths.dist, data.release_prefix)
+        : path.join(config.paths.dev, data.release_prefix);
+      // Base theme path
+      themePath = path.join(config.paths.themes, data.theme);
       // Set theme source paths
       data.paths.sources = {
         languages: path.join(themePath, 'languages'),
@@ -116,6 +121,7 @@ class Loader {
       };
       // Set destinations paths
       data.paths.destinations = {
+        base: baseDestFolder,
         views: baseDestFolder,
         index: baseDestFolder,
         slide: baseDestFolder,
@@ -126,14 +132,12 @@ class Loader {
         covers: path.join(baseDestFolder, 'deckImages', 'covers'),
         javascript: path.join(baseDestFolder, 'javascript')
       };
-      data.releasePrefix = isRelease && data.release_prefix ? data.release_prefix : '';
       data.paths.to = {
-        base: path.join(data.releasePrefix, '/'),
-        styles: path.join(data.releasePrefix, 'styles/'),
-        javascript: path.join(data.releasePrefix, 'javascript/'),
-        images: path.join(data.releasePrefix, 'images/'),
-        deckImages: path.join(data.releasePrefix, 'deckImages/'),
-        covers: path.join(data.releasePrefix, 'deckImages/covers/')
+        styles: 'styles/',
+        javascript: 'javascript/',
+        images: 'images/',
+        deckImages: 'deckImages/',
+        covers: 'deckImages/covers/'
       };
       // Load theme configs
       const defaultThemeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
