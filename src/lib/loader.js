@@ -74,80 +74,71 @@ class Loader {
   }
 
   /*
-   Structure of config parameter:
-   {
-   paths: {
-   settings: 'path/to/settings.yml',
-   slides: 'path/to/slides.yml,
-   themes: 'path/to/themes'
-   },
-   compilers: {
-   sass: {...}
-   }
-   }
+   Load all data for creating the slide deck.
    */
   async loadDeck(config, isRelease) {
-    let data = null;
+    let data;
     try {
       let themePath;
-      // Load base deck settings
+      let baseDestFolder;
+
+      //-----------------------
+      // Load basic deck config
+      //-----------------------
       data = await this.loadDeckConfig(config.paths.settings);
-      // Added compilers
+
+      // Add compilers whether they are passed.
       data.compilers = config.compilers ? config.compilers : {};
-      // Load slide data
-      data.slides = await this.loadSlides(config.paths.slides);
-      // Set paths: sources and destinations
-      data.paths = {};
+
+      // Add release folder prefix
       data.release_prefix = data.release_prefix
         // It guarantees that the base url starts and ends with '/'
         ? path.join('/', data.release_prefix, '/')
         : '/';
+
+      //----------------
+      // Load slide data
+      //----------------
+      data.slides = await this.loadSlides(config.paths.slides);
+
+      // Set paths: sources and destinations
+      data.paths = {};
+
       // Base destination folder
-      const baseDestFolder = isRelease
+      baseDestFolder = isRelease
         ? path.join(config.paths.dist, data.release_prefix)
         : path.join(config.paths.dev, data.release_prefix);
+
       // Base theme path
       themePath = path.join(config.paths.themes, data.theme);
-      // Set theme source paths
-      data.paths.sources = {
-        languages: path.join(themePath, 'languages'),
-        views: path.join(themePath, 'views'),
-        styles: path.join(themePath, 'assets', 'styles'),
-        fonts: path.join(themePath, 'assets', 'fonts'),
-        images: path.join(themePath, 'assets', 'images'),
-        deckImages: config.paths.covers,
-        covers: path.join(config.paths.covers, 'covers'),
-        javascript: path.join(themePath, 'assets', 'javascript')
-      };
+
+      // Set sources
+      // Get theme source paths
+      data.paths.sources = this.getThemeSourcePaths(themePath);
+      // Set user source paths
+      data.paths.sources.deckImages = config.paths.covers;
+      data.paths.sources.covers = path.join(config.paths.covers, 'covers');
+
       // Set destinations paths
-      data.paths.destinations = {
-        base: baseDestFolder,
-        views: baseDestFolder,
-        index: baseDestFolder,
-        slide: baseDestFolder,
-        styles: path.join(baseDestFolder, 'styles'),
-        fonts: path.join(baseDestFolder, 'fonts'),
-        images: path.join(baseDestFolder, 'images'),
-        deckImages: path.join(baseDestFolder, 'deckImages'),
-        covers: path.join(baseDestFolder, 'deckImages', 'covers'),
-        javascript: path.join(baseDestFolder, 'javascript')
-      };
-      data.paths.to = {
-        styles: 'styles/',
-        javascript: 'javascript/',
-        images: 'images/',
-        deckImages: 'deckImages/',
-        covers: 'deckImages/covers/'
-      };
+      data.paths.destinations = this.getDestinationPaths(baseDestFolder);
+      data.paths.to = this.getPathsTo();
+
+      //-------------------
       // Load theme configs
+      //-------------------
       const defaultThemeConfig = await this.loadThemeConfig(path.join(themePath, 'data.yml'));
+
       // Override user theme settings with default theme settings
       data.themeConfig = data.themeConfig
         ? _.merge(defaultThemeConfig, data.themeConfig)
         : defaultThemeConfig;
+
       // Include theme node_modules path
       data.compilers.sass.includePaths.push(path.join(themePath, 'node_modules'));
+
+      //------------------
       // Load translations
+      //------------------
       data.translations = await utils.loadYaml2JSON(
         utils.getPathTranslationFile(data.paths.sources.languages, data.lang)
       );
@@ -155,6 +146,42 @@ class Loader {
       throw new Error(err);
     }
     return data;
+  }
+
+  getPathsTo() {
+    return {
+      styles: 'styles/',
+      javascript: 'javascript/',
+      images: 'images/',
+      deckImages: 'deckImages/',
+      covers: 'deckImages/covers/'
+    }
+  }
+
+  getThemeSourcePaths(themePath) {
+    return {
+      languages: path.join(themePath, 'languages'),
+      views: path.join(themePath, 'views'),
+      styles: path.join(themePath, 'assets', 'styles'),
+      fonts: path.join(themePath, 'assets', 'fonts'),
+      images: path.join(themePath, 'assets', 'images'),
+      javascript: path.join(themePath, 'assets', 'javascript')
+    };
+  }
+
+  getDestinationPaths(root) {
+    return {
+      base: root,
+      views: root,
+      index: root,
+      slide: root,
+      styles: path.join(root, 'styles'),
+      fonts: path.join(root, 'fonts'),
+      images: path.join(root, 'images'),
+      deckImages: path.join(root, 'deckImages'),
+      covers: path.join(root, 'deckImages', 'covers'),
+      javascript: path.join(root, 'javascript')
+    };
   }
 }
 export default Loader;
