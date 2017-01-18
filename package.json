@@ -1,6 +1,6 @@
 {
   "name": "confetti-loader",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Data loader for Confetti, a tool for enriching your online slide decks.",
   "scripts": {
     "clean:bin": "rimraf ./bin/*",
