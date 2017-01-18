@@ -51,20 +51,18 @@ function splitMarkdownParser(array, pattern, limit) {
   const portions = [];
   let counter = 0;
   array.map(item => {
-    if (item !== '') {
-      if (item.indexOf(pattern) > -1) {
-        if (!first) {
-          if (typeof limit === 'undefined' || counter < limit) {
-            portions[counter] = file.substring(0, file.lastIndexOf('\n'));
-            file = '';
-            counter++;
-          }
-        } else {
-          first = false;
+    if (item.indexOf(pattern) > -1) {
+      if (!first) {
+        if (typeof limit === 'undefined' || counter < limit) {
+          portions[counter] = file.substring(0, file.lastIndexOf('\n'));
+          file = ' ';
+          counter++;
         }
       } else {
-        file += `${item}\n`;
+        first = false;
       }
+    } else {
+      file += `${item}\n`;
     }
   });
   portions[counter] = file.substring(0, file.lastIndexOf('\n'));
