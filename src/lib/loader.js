@@ -4,6 +4,7 @@ if (!global._babelPolyfill) {
 import path from 'path';
 import * as utils from './utils';
 import validator from 'tv4';
+import defaultDeckData from './default-settings';
 import settingsSchema from './schemes/settings';
 import slidesSchema from './schemes/slides';
 import _ from 'lodash';
@@ -86,6 +87,9 @@ class Loader {
       // Load basic deck config
       //-----------------------
       data = await this.loadDeckConfig(config.paths.settings);
+
+      // Merge user deck data with default ones
+      data = _.merge(defaultDeckData, data);
 
       // Add compilers whether they are passed.
       data.compilers = config.compilers ? config.compilers : {};
